@@ -23,6 +23,11 @@ workflows:
             sed -i '' "s/platform :ios, .*/platform :ios, '15.0'/g" ios/App/Podfile
           fi
           
+          # Force deployment target in Xcode Project file to iOS 15.0
+          if [ -f ios/App/App.xcodeproj/project.pbxproj ]; then
+            sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g" ios/App/App.xcodeproj/project.pbxproj
+          fi
+
           # Run CocoaPods install directly with updated target
           cd ios/App
           pod repo update || true
@@ -31,7 +36,7 @@ workflows:
       - name: Build iOS App (.app / simulator)
         script: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator' build
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release IPHONEOS_DEPLOYMENT_TARGET=15.0 CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator' build
     artifacts:
       - ios/App/build/**/*.app
       - ios/App/build/**/*.ipa

@@ -34,6 +34,10 @@ jobs:
             sed -i '' "s/platform :ios, .*/platform :ios, '15.0'/g" ios/App/Podfile
           fi
           
+          if [ -f ios/App/App.xcodeproj/project.pbxproj ]; then
+            sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.0;/g" ios/App/App.xcodeproj/project.pbxproj
+          fi
+          
           cd ios/App
           pod repo update || true
           pod install --repo-update
@@ -41,7 +45,7 @@ jobs:
       - name: Build Simulator / iOS Binary
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator' build
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release IPHONEOS_DEPLOYMENT_TARGET=15.0 CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator' build
 
       - name: Upload iOS Build Artifact
         uses: actions/upload-artifact@v4
