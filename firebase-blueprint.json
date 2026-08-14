@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "User account profile information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLogin": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email"]
+    },
+    "chats": {
+      "title": "Chat Session",
+      "description": "Cloud synchronized conversation session",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "personaId": { "type": "string" },
+        "useSearch": { "type": "boolean" },
+        "isPinned": { "type": "boolean" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" },
+        "messages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "role": { "type": "string" },
+              "text": { "type": "string" },
+              "timestamp": { "type": "number" },
+              "images": { "type": "array" },
+              "groundingLinks": { "type": "array" }
+            }
+          }
+        }
+      },
+      "required": ["id", "userId", "title", "createdAt", "updatedAt"]
+    },
+    "customPersonas": {
+      "title": "Custom Persona",
+      "description": "User created AI assistant personality",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "roleTag": { "type": "string" },
+        "iconName": { "type": "string" },
+        "description": { "type": "string" },
+        "systemInstruction": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["id", "userId", "name", "systemInstruction"]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "SAS AI",
+  "description": "SAS AI - Next-generation AI platform for Sinhala & English chat, AI Song & Music creation with voice melodies, AI Photo generation, and Video Storyboard planning created by Sasnula Dilum.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
