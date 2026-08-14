@@ -6,24 +6,33 @@ workflows:
     environment:
       node: 20
       xcode: latest
+      cocoapods: default
     scripts:
-      - name: Install dependencies
+      - name: Install dependencies & build web app
         script: |
           npm install
-      - name: Build Web App
-        script: |
           npm run build
-      - name: Install Capacitor CLI
+      - name: Setup Capacitor iOS with iOS 14+ target
         script: |
           npm install @capacitor/core @capacitor/cli @capacitor/ios
           npx cap init "SAS AI" "com.sasnula.sasai" --web-dir dist
           npx cap add ios
-          npx cap copy ios
-      - name: Build iOS App (.ipa / simulator)
+          # Ensure Podfile uses iOS 14.0 minimum deployment target
+          if [ -f ios/App/Podfile ]; then
+            sed -i '' "s/platform :ios, '13.0'/platform :ios, '14.0'/g" ios/App/Podfile
+            sed -i '' "s/platform :ios, '12.0'/platform :ios, '14.0'/g" ios/App/Podfile
+            sed -i '' "s/platform :ios, '11.0'/platform :ios, '14.0'/g" ios/App/Podfile
+          fi
+          npx cap sync ios
+      - name: Install Pods
         script: |
           cd ios/App
+          pod repo update || true
           pod install
-          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release CODE_SIGNING_ALLOWED=NO -sdk iphonesimulator build
+      - name: Build iOS App
+        script: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator' build
     artifacts:
       - ios/App/build/**/*.app
       - ios/App/build/**/*.ipa
